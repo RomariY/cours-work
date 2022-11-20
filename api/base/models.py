@@ -16,6 +16,15 @@ psql = peewee.PostgresqlDatabase(
 migrator = PostgresqlMigrator(psql)
 
 
+class UUIDModel(peewee.Model):
+    """Parent for all app's models"""
+    id = peewee.TextField(primary_key=True, default=uuid.uuid4())
+
+    class Meta:
+        abstract = True
+        database = psql
+
+
 class BaseModel(peewee.Model):
     """Parent for all app's models"""
     id = peewee.TextField(primary_key=True, default=uuid.uuid4())
