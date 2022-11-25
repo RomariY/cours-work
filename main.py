@@ -22,6 +22,12 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
+
+@app.get("/")
+async def main_page():
+    return {"message": "The app is working fine"}
+
+
 app.include_router(constructors.router)
 app.include_router(functions.router)
 app.include_router(glossary.router)
