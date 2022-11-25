@@ -1,7 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.views import router
+from api.base import database
+from api.constructions import routers as constructors
+
 
 app = FastAPI()
 
@@ -18,4 +20,4 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
-app.include_router(router)
+app.include_router(constructors.router)

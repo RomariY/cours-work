@@ -1,19 +1,19 @@
 import datetime
 import uuid
+from typing import Any
 
 import peewee
-from playhouse.migrate import PostgresqlMigrator
+from pydantic.utils import GetterDict
 
-import settings
+from api.base.database import psql
 
-psql = peewee.PostgresqlDatabase(
-    database=settings.DATABASE,
-    user=settings.DATABASE_USER,
-    password=settings.DATABASE_PASSWORD,
-    host=settings.HOST,
-    port=settings.PORT,
-)
-migrator = PostgresqlMigrator(psql)
+
+class PeeweeGetterDict(GetterDict):
+    def get(self, key: Any, default: Any = None):
+        res = getattr(self._obj, key, default)
+        if isinstance(res, peewee.ModelSelect):
+            return list(res)
+        return res
 
 
 class UUIDModel(peewee.Model):
@@ -38,3 +38,4 @@ class BaseModel(peewee.Model):
     class Meta:
         abstract = True
         database = psql
+
