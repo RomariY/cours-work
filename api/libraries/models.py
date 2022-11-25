@@ -7,7 +7,8 @@ from api.base.models import UUIDModel
 TYPE_CHOICES = (
     (0, 'Draft'),
     (1, 'Published'),
-    (9, 'Deleted'))
+    (2, 'Deleted')
+)
 
 
 class Library(UUIDModel):
