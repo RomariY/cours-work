@@ -1,13 +1,14 @@
-from typing import List
+from typing import List, Union
 from uuid import UUID
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Query
 from playhouse.shortcuts import model_to_dict
 from starlette import status
 from starlette.responses import JSONResponse
 
 from api.base.crud import CrudBase
 from api.functions import schemas
+from api.functions.filters import DataTypeFilter, FunctionFilter
 from api.functions.models import Function, DataType
 from utils.utils import serialize_dict, check_pk_exist
 
@@ -25,12 +26,19 @@ crud = CrudBase(Function)
 
 # DataType endpoints
 @router.get("/data-type", response_model=List[schemas.DataTypeSchema])
-async def list_construction(request: Request):
-    return JSONResponse(status_code=status.HTTP_200_OK, content=data_type_crud.get_objs())
+async def list_function(
+        request: Request,
+        name: Union[str, None] = Query(default="", max_length=50)
+):
+    filter_kwargs = {
+        "name": name
+    }
+    obj = list(DataTypeFilter(filter_kwargs).apply(DataType).dicts())
+    return JSONResponse(status_code=status.HTTP_200_OK, content=obj)
 
 
 @router.get("/data-type/{pk}", response_model=List[schemas.DataTypeSchema])
-async def retrieve_construction(pk: UUID, request: Request):
+async def retrieve_function(pk: UUID, request: Request):
     obj = data_type_crud.get_obj(pk)
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
@@ -42,7 +50,7 @@ async def retrieve_construction(pk: UUID, request: Request):
     response_model=schemas.DataTypeSchema,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_construction(item: schemas.DataTypeCreateSchema, request: Request):
+async def create_function(item: schemas.DataTypeCreateSchema, request: Request):
     kwargs = item.dict()
     obj = data_type_crud.create_obj(**kwargs)
     response = serialize_dict(obj)
@@ -51,12 +59,24 @@ async def create_construction(item: schemas.DataTypeCreateSchema, request: Reque
 
 # Functions endpoints
 @router.get("/", response_model=List[schemas.FunctionSchema])
-async def list_construction(request: Request):
-    return JSONResponse(status_code=status.HTTP_200_OK, content=crud.get_objs())
+async def list_function(
+        request: Request,
+        name: Union[str, None] = Query(default="", max_length=50),
+        data_type: Union[str, None] = Query(default="", max_length=50)
+
+):
+    filter_kwargs = {
+        "name": name,
+    }
+    response_json = FunctionFilter(filter_kwargs).apply(Function)
+    if data_type:
+        response_json = response_json.join(DataType).where(DataType.name == data_type)
+    obj = list(response_json.dicts())
+    return JSONResponse(status_code=status.HTTP_200_OK, content=obj)
 
 
 @router.get("/{pk}", response_model=List[schemas.FunctionSchema])
-async def retrieve_construction(pk: UUID, request: Request):
+async def retrieve_function(pk: UUID, request: Request):
     obj = crud.get_obj(pk)
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
@@ -68,7 +88,7 @@ async def retrieve_construction(pk: UUID, request: Request):
     response_model=schemas.FunctionSchema,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_construction(item: schemas.FunctionCreateSchema, request: Request):
+async def create_function(item: schemas.FunctionCreateSchema, request: Request):
     kwargs = item.dict()
     data_type_pk = kwargs.get("return_type")
     exist_status = check_pk_exist(DataType, data_type_pk)
@@ -85,7 +105,7 @@ async def create_construction(item: schemas.FunctionCreateSchema, request: Reque
     status_code=status.HTTP_200_OK,
     response_model=schemas.FunctionSchema,
 )
-async def update_construction(pk: UUID, item: schemas.FunctionCreateSchema, request: Request):
+async def update_function(pk: UUID, item: schemas.FunctionCreateSchema, request: Request):
     obj = crud.get_obj(pk)
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
@@ -114,7 +134,7 @@ async def update_construction(pk: UUID, item: schemas.FunctionCreateSchema, requ
     "/{pk}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_construction(pk: UUID, request: Request):
+async def delete_function(pk: UUID, request: Request):
     obj = crud.get_obj(pk)
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})

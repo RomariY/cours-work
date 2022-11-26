@@ -1,13 +1,14 @@
-from typing import List
+from typing import List, Union
 from uuid import UUID
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Query
 from playhouse.shortcuts import model_to_dict
 from starlette import status
 from starlette.responses import JSONResponse
 
 from api.base.crud import CrudBase
 from api.operators import schemas
+from api.operators.filters import OperatorFilter
 from api.operators.models import Operator
 
 router = APIRouter(
@@ -22,8 +23,16 @@ crud = CrudBase(Operator)
 
 
 @router.get("/", response_model=List[schemas.OperatorSchema])
-async def list_construction(request: Request):
-    return JSONResponse(status_code=status.HTTP_200_OK, content=crud.get_objs())
+async def list_construction(
+        request: Request,
+        name: Union[str, None] = Query(default="", max_length=50),
+):
+    filter_kwargs = {
+        "name": name,
+    }
+    response_json = OperatorFilter(filter_kwargs).apply(Operator)
+    obj = list(response_json.dicts())
+    return JSONResponse(status_code=status.HTTP_200_OK, content=obj)
 
 
 @router.get("/{pk}", response_model=List[schemas.OperatorSchema])
