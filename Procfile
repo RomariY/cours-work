@@ -1,1 +1,1 @@
-web: gunicorn main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 127.0.0.1:8000
+web: gunicorn -k uvicorn.workers.UvicornWorker --log-level debug main:app --workers 1
