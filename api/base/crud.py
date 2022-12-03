@@ -1,6 +1,8 @@
 from uuid import UUID
 from playhouse.shortcuts import model_to_dict
 
+from api.base.database import psql
+
 
 class CrudBase(object):
     def __init__(self, cls):
@@ -13,8 +15,17 @@ class CrudBase(object):
         return list(self.cls.select().offset(skip).limit(limit).dicts())
 
     def create_obj(self, **kwargs):
-        obj = self.cls.create(**kwargs)
-        return model_to_dict(obj)
+        obj = None
+        with psql.atomic() as transaction:
+            try:
+                obj = self.cls.create(**kwargs)
+                obj = model_to_dict(obj)
+            except Exception:
+                transaction.rollback()
+                error_saving = True
+                raise Exception(f"The database failed in creation an object for model {self.cls}")
+
+        return obj
 
     def delete_obj(self, pk: UUID):
         self.cls.delete().where(self.cls.id == pk).execute()

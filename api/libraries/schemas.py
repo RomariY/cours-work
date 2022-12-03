@@ -8,28 +8,29 @@ from pydantic import Field
 
 
 class S(str, Enum):
-    group1 = 'Group1'
-    group2 = 'Group2'
-    group3 = "Group3"
+    secure = 'Secure'
+    compiling = 'Compiling'
+    database = "Database"
+    base = "Basic"
 
 
 class LibrarySchema(BaseModel):
     id: UUID = Field(default_factory=uuid.uuid4())
     name: str
-    type: S = S.group1
+    type: S = S.base
     description: str
     repo_link: HttpUrl
 
 
 class LibraryCreateSchema(BaseModel):
     name: str
-    type: S = S.group1
+    type: S = S.base
     description: str
     repo_link: HttpUrl
 
 
 class LibraryUpdateSchema(BaseModel):
     name: Optional[str]
-    type: Optional[S]
+    type: Optional[S] = S.base
     description: Optional[str]
     repo_link: Optional[HttpUrl]

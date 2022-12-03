@@ -16,15 +16,15 @@ class ConstructionSchema(BaseModel):
 
 
 class ConstructionCreateSchema(BaseModel):
-    name: str
-    description: str
+    name: str = Field(None, max_length=32)
+    description: str = Field(None, max_length=200)
     syntax: str
     example: str
 
 
 class ConstructionUpdateSchema(BaseModel):
-    name: Optional[str]
-    description: Optional[str]
+    name: Optional[str] = Field(None, max_length=32)
+    description: Optional[str] = Field(None, max_length=200)
     syntax: Optional[str]
     example: Optional[str]
 

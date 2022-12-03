@@ -145,7 +145,7 @@ async def create_function(item: schemas.FunctionCreateSchema, request: Request):
     status_code=status.HTTP_200_OK,
     response_model=schemas.FunctionSchema,
 )
-async def update_function(pk: UUID, item: schemas.FunctionCreateSchema, request: Request):
+async def update_function(pk: UUID, item: schemas.FunctionUpdateSchema, request: Request):
     obj = crud.get_obj(pk)
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})

@@ -37,3 +37,12 @@ class FunctionCreateSchema(BaseModel):
     return_type: UUID
     example: str
     note: str
+
+
+class FunctionUpdateSchema(BaseModel):
+    name: Optional[str]
+    description: Optional[str]
+    params: Optional[List[str]]
+    return_type: Optional[UUID]
+    example: Optional[str]
+    note: Optional[str]

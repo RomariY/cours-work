@@ -66,6 +66,7 @@ async def update_construction(pk: UUID, item: schemas.ConstructionUpdateSchema, 
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
     updated_data = item.dict(exclude_none=True)
+
     for key in updated_data.keys():
         exec(f"obj.{key} = '{updated_data[key]}'")
     obj.save()
