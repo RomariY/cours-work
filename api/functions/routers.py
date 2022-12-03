@@ -26,7 +26,7 @@ crud = CrudBase(Function)
 
 # DataType endpoints
 @router.get("/data-type", response_model=List[schemas.DataTypeSchema])
-async def list_function(
+async def list_data_type(
         request: Request,
         name: Union[str, None] = Query(default="", max_length=50)
 ):
@@ -38,7 +38,7 @@ async def list_function(
 
 
 @router.get("/data-type/{pk}", response_model=List[schemas.DataTypeSchema])
-async def retrieve_function(pk: UUID, request: Request):
+async def retrieve_data_type(pk: UUID, request: Request):
     obj = data_type_crud.get_obj(pk)
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
@@ -50,7 +50,7 @@ async def retrieve_function(pk: UUID, request: Request):
     status_code=status.HTTP_200_OK,
     response_model=schemas.DataTypeSchema,
 )
-async def update_function(pk: UUID, item: schemas.DataTypeCreateSchema, request: Request):
+async def update_data_type(pk: UUID, item: schemas.DataTypeCreateSchema, request: Request):
     obj = data_type_crud.get_obj(pk)
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
@@ -73,7 +73,7 @@ async def update_function(pk: UUID, item: schemas.DataTypeCreateSchema, request:
     response_model=schemas.DataTypeSchema,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_function(item: schemas.DataTypeCreateSchema, request: Request):
+async def create_data_type(item: schemas.DataTypeCreateSchema, request: Request):
     kwargs = item.dict()
     obj = data_type_crud.create_obj(**kwargs)
     response = serialize_dict(obj)
@@ -84,7 +84,7 @@ async def create_function(item: schemas.DataTypeCreateSchema, request: Request):
     "/data-type/{pk}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_function(pk: UUID, request: Request):
+async def delete_data_type(pk: UUID, request: Request):
     obj = data_type_crud.get_obj(pk)
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
@@ -103,16 +103,21 @@ async def list_function(
     filter_kwargs = {
         "name": name,
     }
+
     response_json = FunctionFilter(filter_kwargs).apply(Function)
     if data_type:
         response_json = response_json.join(DataType).where(DataType.name == data_type)
     obj = list(response_json.dicts())
+    for each in obj:
+        data_type = each.get("return_type")
+        data_type_obj = data_type_crud.get_obj(data_type)
+        each.update({"return_type": model_to_dict(data_type_obj)})
     return JSONResponse(status_code=status.HTTP_200_OK, content=obj)
 
 
 @router.get("/{pk}", response_model=List[schemas.FunctionSchema])
 async def retrieve_function(pk: UUID, request: Request):
-    obj = crud.get_obj(pk)
+    obj = model_to_dict(crud.get_obj(pk))
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
     return JSONResponse(status_code=status.HTTP_200_OK, content=model_to_dict(obj))

@@ -18,7 +18,7 @@ class PeeweeGetterDict(GetterDict):
 
 class UUIDModel(peewee.Model):
     """Parent for all app's models"""
-    id = peewee.TextField(primary_key=True, default=uuid.uuid4())
+    id = peewee.TextField(primary_key=True, default=uuid.uuid4)
 
     class Meta:
         abstract = True
@@ -27,7 +27,7 @@ class UUIDModel(peewee.Model):
 
 class BaseModel(peewee.Model):
     """Parent for all app's models"""
-    id = peewee.TextField(primary_key=True, default=uuid.uuid4())
+    id = peewee.TextField(primary_key=True, default=uuid.uuid4)
     created = peewee.DateTimeField(default=datetime.datetime.now)
     modified = peewee.DateTimeField()
 

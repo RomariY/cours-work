@@ -16,14 +16,14 @@ class S(str, Enum):
 class LibrarySchema(BaseModel):
     id: UUID = Field(default_factory=uuid.uuid4())
     name: str
-    type: S
+    type: S = S.group1
     description: str
     repo_link: HttpUrl
 
 
 class LibraryCreateSchema(BaseModel):
     name: str
-    type: S
+    type: S = S.group1
     description: str
     repo_link: HttpUrl
 
