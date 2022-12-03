@@ -45,6 +45,29 @@ async def retrieve_function(pk: UUID, request: Request):
     return JSONResponse(status_code=status.HTTP_200_OK, content=model_to_dict(obj))
 
 
+@router.patch(
+    "/data-type/{pk}",
+    status_code=status.HTTP_200_OK,
+    response_model=schemas.DataTypeSchema,
+)
+async def update_function(pk: UUID, item: schemas.DataTypeCreateSchema, request: Request):
+    obj = data_type_crud.get_obj(pk)
+    if not obj:
+        return JSONResponse(status_code=404, content={"message": "Item not found"})
+    updated_data = item.dict(exclude_none=True)
+    for key in updated_data.keys():
+        try:
+            tp = type(updated_data[key]).__name__
+            if tp == "str" or tp == "UUID":
+                exec(f'obj.{key} = {tp}("{updated_data[key]}")')
+            else:
+                exec(f'obj.{key} = {tp}({updated_data[key]})')
+        except ValueError:
+            raise ValueError(f"Failed to assign {updated_data[key]} field to {key}")
+    obj.save()
+    return JSONResponse(status_code=status.HTTP_200_OK, content=model_to_dict(obj))
+
+
 @router.post(
     "/data-type-create",
     response_model=schemas.DataTypeSchema,
@@ -55,6 +78,18 @@ async def create_function(item: schemas.DataTypeCreateSchema, request: Request):
     obj = data_type_crud.create_obj(**kwargs)
     response = serialize_dict(obj)
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=response)
+
+
+@router.delete(
+    "/data-type/{pk}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_function(pk: UUID, request: Request):
+    obj = data_type_crud.get_obj(pk)
+    if not obj:
+        return JSONResponse(status_code=404, content={"message": "Item not found"})
+    data_type_crud.delete_obj(pk)
+    return None
 
 
 # Functions endpoints

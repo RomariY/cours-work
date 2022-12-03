@@ -13,6 +13,7 @@ origins = [
     'http://localhost',
     'http://127.0.0.1',
     'http://127.0.0.1:8000',
+    'http://127.0.0.1:7777',
     'http://localhost:8000',
 ]
 
