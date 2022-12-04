@@ -120,7 +120,7 @@ async def retrieve_function(pk: UUID, request: Request):
     obj = model_to_dict(crud.get_obj(pk))
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
-    return JSONResponse(status_code=status.HTTP_200_OK, content=model_to_dict(obj))
+    return JSONResponse(status_code=status.HTTP_200_OK, content=obj)
 
 
 @router.post(
