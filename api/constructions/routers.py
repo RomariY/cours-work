@@ -82,4 +82,4 @@ async def delete_construction(pk: UUID, request: Request):
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
     crud.delete_obj(pk)
-    return None
+    return {"status_code": 204, "message": "Successfully deleted"}

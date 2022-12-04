@@ -89,7 +89,7 @@ async def delete_data_type(pk: UUID, request: Request):
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
     data_type_crud.delete_obj(pk)
-    return None
+    return {"status_code": 204, "message": "Successfully deleted"}
 
 
 # Functions endpoints
@@ -179,4 +179,4 @@ async def delete_function(pk: UUID, request: Request):
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
     crud.delete_obj(pk)
-    return None
+    return {"status_code": 204, "message": "Successfully deleted"}
