@@ -150,20 +150,17 @@ async def update_function(pk: UUID, item: schemas.FunctionUpdateSchema, request:
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
     updated_data = item.dict(exclude_none=True)
-
+    schema_data = item.parse_obj(updated_data)
     # Check DataType FK
     data_type_pk = updated_data.get("return_type")
     if data_type_pk:
         exist_status = check_pk_exist(DataType, data_type_pk)
         if not exist_status:
             return JSONResponse(status_code=404, content={"message": "DataType with this UUID doesn't exist"})
-    for key in updated_data.keys():
+    for each in schema_data:
+        key = each[0]
         try:
-            tp = type(updated_data[key]).__name__
-            if tp == "str" or tp == "UUID":
-                exec(f'obj.{key} = {tp}("{updated_data[key]}")')
-            else:
-                exec(f'obj.{key} = {tp}({updated_data[key]})')
+            exec(f'obj.{key} = schema_data.{key}')
         except ValueError:
             raise ValueError(f"Failed to assign {updated_data[key]} field to {key}")
     obj.save()

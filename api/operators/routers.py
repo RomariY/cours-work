@@ -66,14 +66,11 @@ async def update_construction(pk: UUID, item: schemas.OperatorUpdateSchema, requ
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
     updated_data = item.dict(exclude_none=True)
-
-    for key in updated_data.keys():
+    schema_data = item.parse_obj(updated_data)
+    for each in schema_data:
+        key = each[0]
         try:
-            tp = type(updated_data[key]).__name__
-            if tp == "str" or tp == "UUID":
-                exec(f'obj.{key} = {tp}("{updated_data[key]}")')
-            else:
-                exec(f'obj.{key} = {tp}({updated_data[key]})')
+            exec(f'obj.{key} = schema_data.{key}')
         except ValueError:
             raise ValueError(f"Failed to assign {updated_data[key]} field to {key}")
     obj.save()
