@@ -7,6 +7,7 @@ from starlette import status
 from starlette.responses import JSONResponse
 
 from api.base.crud import CrudBase
+from api.base.utils import crop_dict_values
 from api.functions import schemas
 from api.functions.filters import DataTypeFilter, FunctionFilter
 from api.functions.models import Function, DataType
@@ -33,7 +34,7 @@ async def list_data_type(
     filter_kwargs = {
         "name": name
     }
-    obj = list(DataTypeFilter(filter_kwargs).apply(DataType).dicts())
+    obj = list(crop_dict_values(DataTypeFilter(filter_kwargs).apply(DataType).dicts()))
     return JSONResponse(status_code=status.HTTP_200_OK, content=obj)
 
 
@@ -107,7 +108,7 @@ async def list_function(
     response_json = FunctionFilter(filter_kwargs).apply(Function)
     if data_type:
         response_json = response_json.join(DataType).where(DataType.name == data_type)
-    obj = list(response_json.dicts())
+    obj = list(crop_dict_values(response_json.dicts()))
     for each in obj:
         data_type = each.get("return_type")
         data_type_obj = data_type_crud.get_obj(data_type)

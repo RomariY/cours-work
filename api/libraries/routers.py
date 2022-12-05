@@ -8,6 +8,7 @@ from starlette import status
 from starlette.responses import JSONResponse
 
 from api.base.crud import CrudBase
+from api.base.utils import crop_dict_values
 from api.libraries import schemas
 from api.libraries.filters import LibraryFilter
 from api.libraries.models import Library
@@ -35,8 +36,8 @@ async def list_construction(
         "type": type_filter
     }
     response_json = LibraryFilter(filter_kwargs).apply(Library)
-    obj = list(response_json.dicts())
-    return JSONResponse(status_code=status.HTTP_200_OK, content=obj)
+    obj = crop_dict_values(response_json.dicts())
+    return JSONResponse(status_code=status.HTTP_200_OK, content=list(obj))
 
 
 @router.get("/library-types", response_model=List)

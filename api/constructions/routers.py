@@ -7,6 +7,7 @@ from starlette import status
 from starlette.responses import JSONResponse
 
 from api.base.crud import CrudBase
+from api.base.utils import crop_dict_values
 from api.constructions import schemas
 from api.constructions.filters import ConstructionFilter
 from api.constructions.models import Construction
@@ -31,7 +32,7 @@ async def list_construction(
     filter_kwargs = {
         "name": name
     }
-    obj = list(ConstructionFilter(filter_kwargs).apply(Construction).dicts())
+    obj = list(crop_dict_values(ConstructionFilter(filter_kwargs).apply(Construction).dicts()))
     return JSONResponse(status_code=status.HTTP_200_OK, content=obj)
 
 

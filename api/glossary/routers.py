@@ -7,6 +7,7 @@ from starlette import status
 from starlette.responses import JSONResponse
 
 from api.base.crud import CrudBase
+from api.base.utils import crop_dict_values
 from api.glossary import schemas
 from api.glossary.filters import GlossaryFilter
 from api.glossary.models import Glossary
@@ -31,7 +32,7 @@ async def list_construction(
         "name": name,
     }
     response_json = GlossaryFilter(filter_kwargs).apply(Glossary)
-    obj = list(response_json.dicts())
+    obj = list(crop_dict_values(response_json.dicts()))
     return JSONResponse(status_code=status.HTTP_200_OK, content=obj)
 
 
