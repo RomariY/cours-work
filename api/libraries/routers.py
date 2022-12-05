@@ -2,6 +2,7 @@ from typing import List, Union
 from uuid import UUID
 
 from fastapi import APIRouter, Request, Query
+from fastapi.encoders import jsonable_encoder
 from playhouse.shortcuts import model_to_dict
 from starlette import status
 from starlette.responses import JSONResponse
@@ -68,14 +69,11 @@ async def update_construction(pk: UUID, item: schemas.LibraryUpdateSchema, reque
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
     updated_data = item.dict(exclude_none=True)
-
-    for key in updated_data.keys():
+    schema_data = schemas.LibraryUpdateSchema.parse_obj(updated_data)
+    for each in schema_data:
+        key = each[0]
         try:
-            tp = type(updated_data[key]).__name__
-            if tp == "str" or tp == "UUID":
-                exec(f'obj.{key} = {tp}("{updated_data[key]}")')
-            else:
-                exec(f'obj.{key} = {tp}({updated_data[key]})')
+            exec(f'obj.{key} = schema_data.{key}')
         except ValueError:
             raise ValueError(f"Failed to assign {updated_data[key]} field to {key}")
     obj.save()
