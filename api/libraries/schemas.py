@@ -16,21 +16,21 @@ class LibraryTypes(str, Enum):
 
 class LibrarySchema(BaseModel):
     id: UUID = Field(default_factory=uuid.uuid4())
-    name: str
+    name: str = Field(None, max_length=50)
     type: LibraryTypes = LibraryTypes.base
-    description: str
+    description: str = Field(None, max_length=200)
     repo_link: HttpUrl
 
 
 class LibraryCreateSchema(BaseModel):
-    name: str
+    name: str = Field(None, max_length=50)
     type: LibraryTypes = LibraryTypes.base
-    description: str
+    description: str = Field(None, max_length=200)
     repo_link: HttpUrl
 
 
 class LibraryUpdateSchema(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = Field(None, max_length=50)
     type: Optional[LibraryTypes] = LibraryTypes.base
-    description: Optional[str]
+    description: Optional[str] = Field(None, max_length=200)
     repo_link: Optional[HttpUrl]

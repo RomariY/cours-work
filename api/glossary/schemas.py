@@ -8,15 +8,15 @@ from pydantic import Field
 
 class GlossarySchema(BaseModel):
     id: UUID = Field(default_factory=uuid.uuid4())
-    name: str
-    description: str
+    name: str = Field(None, max_length=32)
+    description: str = Field(None, max_length=200)
 
 
 class GlossaryCreateSchema(BaseModel):
-    name: str
-    description: str
+    name: str = Field(None, max_length=32)
+    description: str = Field(None, max_length=200)
 
 
 class GlossaryUpdateSchema(BaseModel):
-    name: Optional[str]
-    description: Optional[str]
+    name: Optional[str] = Field(None, max_length=32)
+    description: Optional[str] = Field(None, max_length=200)

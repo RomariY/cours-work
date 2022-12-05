@@ -9,7 +9,7 @@ from pydantic.json import pydantic_encoder
 
 class ConstructionSchema(BaseModel):
     id: UUID = Field(default_factory=uuid.uuid4())
-    name: str
+    name: str = Field(None, max_length=32)
     description: str
     syntax: str
     example: str
@@ -18,14 +18,14 @@ class ConstructionSchema(BaseModel):
 class ConstructionCreateSchema(BaseModel):
     name: str = Field(None, max_length=32)
     description: str = Field(None, max_length=200)
-    syntax: str
+    syntax: str = Field(None, max_length=200)
     example: str
 
 
 class ConstructionUpdateSchema(BaseModel):
     name: Optional[str] = Field(None, max_length=32)
     description: Optional[str] = Field(None, max_length=200)
-    syntax: Optional[str]
+    syntax: Optional[str] = Field(None, max_length=200)
     example: Optional[str]
 
 

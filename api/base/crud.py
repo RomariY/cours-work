@@ -1,5 +1,7 @@
 from uuid import UUID
 from playhouse.shortcuts import model_to_dict
+from starlette import status
+from starlette.responses import JSONResponse
 
 from api.base.database import psql
 
@@ -24,7 +26,6 @@ class CrudBase(object):
                 transaction.rollback()
                 error_saving = True
                 raise Exception(f"The database failed in creation an object for model {self.cls}")
-
         return obj
 
     def delete_obj(self, pk: UUID):

@@ -17,7 +17,7 @@ class Library(UUIDModel):
     name = peewee.CharField(max_length=50, null=True)
     type = peewee.CharField(max_length=32, choices=TYPE_CHOICES)
     description = peewee.CharField(max_length=200)
-    repo_link = peewee.CharField(max_length=50)
+    repo_link = peewee.CharField(max_length=200)
 
     class Config:
         orm_mode = True
