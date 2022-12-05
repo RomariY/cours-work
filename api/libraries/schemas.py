@@ -7,7 +7,7 @@ from pydantic import BaseModel, HttpUrl
 from pydantic import Field
 
 
-class S(str, Enum):
+class LibraryTypes(str, Enum):
     secure = 'Secure'
     compiling = 'Compiling'
     database = "Database"
@@ -17,20 +17,20 @@ class S(str, Enum):
 class LibrarySchema(BaseModel):
     id: UUID = Field(default_factory=uuid.uuid4())
     name: str
-    type: S = S.base
+    type: LibraryTypes = LibraryTypes.base
     description: str
     repo_link: HttpUrl
 
 
 class LibraryCreateSchema(BaseModel):
     name: str
-    type: S = S.base
+    type: LibraryTypes = LibraryTypes.base
     description: str
     repo_link: HttpUrl
 
 
 class LibraryUpdateSchema(BaseModel):
     name: Optional[str]
-    type: Optional[S] = S.base
+    type: Optional[LibraryTypes] = LibraryTypes.base
     description: Optional[str]
     repo_link: Optional[HttpUrl]

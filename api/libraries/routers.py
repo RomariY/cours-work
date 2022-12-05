@@ -11,6 +11,7 @@ from api.base.crud import CrudBase
 from api.libraries import schemas
 from api.libraries.filters import LibraryFilter
 from api.libraries.models import Library
+from api.libraries.schemas import LibraryTypes
 
 router = APIRouter(
     prefix="/library",
@@ -35,6 +36,14 @@ async def list_construction(
     }
     response_json = LibraryFilter(filter_kwargs).apply(Library)
     obj = list(response_json.dicts())
+    return JSONResponse(status_code=status.HTTP_200_OK, content=obj)
+
+
+@router.get("/library-types", response_model=List)
+async def list_construction(
+        request: Request,
+):
+    obj = list(each.value for each in schemas.LibraryTypes)
     return JSONResponse(status_code=status.HTTP_200_OK, content=obj)
 
 
