@@ -69,7 +69,7 @@ async def update_construction(pk: UUID, item: schemas.LibraryUpdateSchema, reque
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})
     updated_data = item.dict(exclude_none=True)
-    schema_data = schemas.LibraryUpdateSchema.parse_obj(updated_data)
+    schema_data = item.parse_obj(updated_data)
     for each in schema_data:
         key = each[0]
         try:
