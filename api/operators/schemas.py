@@ -2,8 +2,11 @@ import uuid
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from pydantic import Field
+
+from api.base.models import BaseNameUnique
+from api.operators.models import Operator
 
 
 class OperatorSchema(BaseModel):
@@ -13,13 +16,21 @@ class OperatorSchema(BaseModel):
     example: str
 
 
-class OperatorCreateSchema(BaseModel):
+class OperatorCreateSchema(BaseModel, BaseNameUnique):
     name: str = Field(None, max_length=32)
     syntax: str = Field(None, max_length=200)
     example: str
 
+    @validator("name")
+    def name_must_be_unique(cls, value):
+        return super(OperatorCreateSchema, cls).name_must_be_unique(value, Operator)
 
-class OperatorUpdateSchema(BaseModel):
+
+class OperatorUpdateSchema(BaseModel, BaseNameUnique):
     name: Optional[str] = Field(None, max_length=32)
     syntax: Optional[str] = Field(None, max_length=200)
     example: Optional[str]
+
+    @validator("name")
+    def name_must_be_unique(cls, value):
+        return super(OperatorUpdateSchema, cls).name_must_be_unique(value, Operator)

@@ -3,6 +3,7 @@ import uuid
 from typing import Any
 
 import peewee
+from pydantic import validator
 from pydantic.utils import GetterDict
 
 from api.base.database import psql
@@ -39,3 +40,11 @@ class BaseModel(peewee.Model):
         abstract = True
         database = psql
 
+
+class BaseNameUnique:
+    @validator("name")
+    def name_must_be_unique(cls, value, model):
+        filter_dict = {"name": value}
+        if model.get_or_none(**filter_dict):
+            raise ValueError(f"{model.__name__} with name {value} already exists")
+        return value
