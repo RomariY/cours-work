@@ -18,7 +18,7 @@ class DataTypeFilter(filters.FilterSet):
 
 
 class FunctionFilter(filters.FilterSet):
-    name = filters.Filter(operator="startswith")
+    name = filters.Filter(operator="contains")
 
     def filter_description(self, query, value: bool, **kwargs):
         return query.where(

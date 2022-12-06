@@ -4,7 +4,7 @@ from api.glossary.models import Glossary
 
 
 class GlossaryFilter(filters.FilterSet):
-    name = filters.Filter(operator="startswith")
+    name = filters.Filter(operator="contains")
 
     def filter_description(self, query, value: bool, **kwargs):
         return query.where(
