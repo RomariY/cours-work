@@ -24,10 +24,6 @@ class GlossaryCreateSchema(BaseModel, BaseNameUnique):
         return super(GlossaryCreateSchema, cls).name_must_be_unique(value, Glossary)
 
 
-class GlossaryUpdateSchema(BaseModel, BaseNameUnique):
+class GlossaryUpdateSchema(BaseModel):
     name: Optional[str] = Field(None, max_length=32)
     description: Optional[str] = Field(None, max_length=200)
-
-    @validator("name")
-    def name_must_be_unique(cls, value):
-        return super(GlossaryUpdateSchema, cls).name_must_be_unique(value, Glossary)

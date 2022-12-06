@@ -27,14 +27,10 @@ class DataTypeCreateSchema(BaseModel, BaseNameUnique):
         return super(DataTypeCreateSchema, cls).name_must_be_unique(value, DataType)
 
 
-class DataTypeUpdateSchema(BaseModel, BaseNameUnique):
+class DataTypeUpdateSchema(BaseModel):
     name: str = Field(None, max_length=32)
     description: str = Field(None, max_length=200)
     example: str
-
-    @validator("name")
-    def name_must_be_unique(cls, value):
-        return super(DataTypeUpdateSchema, cls).name_must_be_unique(value, DataType)
 
 
 class FunctionSchema(BaseModel):
@@ -60,14 +56,10 @@ class FunctionCreateSchema(BaseModel, BaseNameUnique):
         return super(FunctionCreateSchema, cls).name_must_be_unique(value, DataType)
 
 
-class FunctionUpdateSchema(BaseModel, BaseNameUnique):
+class FunctionUpdateSchema(BaseModel):
     name: Optional[str] = Field(None, max_length=32)
     description: Optional[str] = Field(None, max_length=200)
     params: Optional[List[str]]
     return_type: Optional[UUID]
     example: Optional[str]
     note: Optional[str] = Field(None, max_length=200)
-
-    @validator("name")
-    def name_must_be_unique(cls, value):
-        return super(FunctionUpdateSchema, cls).name_must_be_unique(value, DataType)

@@ -26,11 +26,7 @@ class OperatorCreateSchema(BaseModel, BaseNameUnique):
         return super(OperatorCreateSchema, cls).name_must_be_unique(value, Operator)
 
 
-class OperatorUpdateSchema(BaseModel, BaseNameUnique):
+class OperatorUpdateSchema(BaseModel):
     name: Optional[str] = Field(None, max_length=32)
     syntax: Optional[str] = Field(None, max_length=200)
     example: Optional[str]
-
-    @validator("name")
-    def name_must_be_unique(cls, value):
-        return super(OperatorUpdateSchema, cls).name_must_be_unique(value, Operator)

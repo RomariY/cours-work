@@ -51,7 +51,7 @@ async def retrieve_data_type(pk: UUID, request: Request):
     status_code=status.HTTP_200_OK,
     response_model=schemas.DataTypeSchema,
 )
-async def update_data_type(pk: UUID, item: schemas.DataTypeCreateSchema, request: Request):
+async def update_data_type(pk: UUID, item: schemas.DataTypeUpdateSchema, request: Request):
     obj = data_type_crud.get_obj(pk)
     if not obj:
         return JSONResponse(status_code=404, content={"message": "Item not found"})

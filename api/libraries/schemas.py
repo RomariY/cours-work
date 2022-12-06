@@ -44,20 +44,8 @@ class LibraryCreateSchema(BaseModel, BaseNameUnique):
         return value
 
 
-class LibraryUpdateSchema(BaseModel, BaseNameUnique):
+class LibraryUpdateSchema(BaseModel):
     name: Optional[str] = Field(None, max_length=50)
     type: Optional[LibraryTypes] = LibraryTypes.base
     description: Optional[str] = Field(None, max_length=200)
     repo_link: Optional[HttpUrl]
-
-    @validator("name")
-    def name_must_be_unique(cls, value):
-        return super(LibraryUpdateSchema, cls).name_must_be_unique(value, Library)
-
-    @validator("repo_link")
-    def validate_repo_link(cls, value):
-        model = Library
-        filter_dict = {"repo_link": value}
-        if model.get_or_none(**filter_dict):
-            raise ValueError(f"{model.__name__} with name {value} already exists")
-        return value

@@ -29,15 +29,11 @@ class ConstructionCreateSchema(BaseModel, BaseNameUnique):
         return super(ConstructionCreateSchema, cls).name_must_be_unique(value, Construction)
 
 
-class ConstructionUpdateSchema(BaseModel, BaseNameUnique):
+class ConstructionUpdateSchema(BaseModel):
     name: Optional[str] = Field(None, max_length=32)
     description: Optional[str] = Field(None, max_length=200)
     syntax: Optional[str] = Field(None, max_length=200)
     example: Optional[str]
-
-    @validator("name")
-    def name_must_be_unique(cls, value):
-        return super(ConstructionUpdateSchema, cls).name_must_be_unique(value, Construction)
 
 
 def exclude_optional_dict(model: BaseModel):
